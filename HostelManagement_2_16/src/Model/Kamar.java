@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Model;
+
 import java.math.BigDecimal;
 
 public class Kamar {
@@ -15,15 +16,6 @@ public class Kamar {
     
     public Kamar() {}
     
-    public Kamar(String nomorKamar, String tipe, BigDecimal hargaPerMalam, String status, String fasilitas) {
-        this.nomorKamar = nomorKamar;
-        this.tipe = tipe;
-        this.hargaPerMalam = hargaPerMalam;
-        this.status = status;
-        this.fasilitas = fasilitas;
-    }
-    
-    // Getters & Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getNomorKamar() { return nomorKamar; }

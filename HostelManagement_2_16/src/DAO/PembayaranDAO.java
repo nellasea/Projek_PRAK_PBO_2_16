@@ -5,7 +5,7 @@
 package DAO;
 
 import config.DatabaseConnection;
-import model.Pembayaran;
+import Model.Pembayaran;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -4,13 +4,14 @@
  */
 package Controller;
 
-import dao.PembayaranDAO;
-import model.Pembayaran;
+import DAO.PembayaranDAO;
+import Model.Pembayaran;
 import java.util.List;
 
 public class PembayaranController {
+    
     private PembayaranDAO dao = new PembayaranDAO();
-
+    
     public boolean insertPembayaran(Pembayaran p) {
         return dao.insertPembayaran(p);
     }

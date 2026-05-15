@@ -25,17 +25,68 @@ public class Tamu {
         this.tanggalLahir = tanggalLahir;
     }
     
-    // Getters dan Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getNama() { return nama; }
-    public void setNama(String nama) { this.nama = nama; }
-    public String getNoKtp() { return noKtp; }
-    public void setNoKtp(String noKtp) { this.noKtp = noKtp; }
-    public String getNoTelepon() { return noTelepon; }
-    public void setNoTelepon(String noTelepon) { this.noTelepon = noTelepon; }
-    public String getAlamat() { return alamat; }
-    public void setAlamat(String alamat) { this.alamat = alamat; }
-    public Date getTanggalLahir() { return tanggalLahir; }
-    public void setTanggalLahir(Date tanggalLahir) { this.tanggalLahir = tanggalLahir; }
+    // Getters
+    public int getId() { 
+        return id; 
+    }
+    
+    public String getNama() { 
+        return nama; 
+    }
+    
+    public String getNoKtp() { 
+        return noKtp; 
+    }
+    
+    public String getNoTelepon() { 
+        return noTelepon; 
+    }
+    
+    public String getAlamat() { 
+        return alamat; 
+    }
+    
+    public Date getTanggalLahir() { 
+        return tanggalLahir; 
+    }
+    
+    // Setters
+    public void setId(int id) { 
+        this.id = id; 
+    }
+    
+    public void setNama(String nama) { 
+        this.nama = nama; 
+    }
+    
+    public void setNoKtp(String noKtp) { 
+        this.noKtp = noKtp; 
+    }
+    
+    public void setNoTelepon(String noTelepon) { 
+        this.noTelepon = noTelepon; 
+    }
+    
+    public void setAlamat(String alamat) { 
+        this.alamat = alamat; 
+    }
+    
+    public void setTanggalLahir(Date tanggalLahir) { 
+        this.tanggalLahir = tanggalLahir; 
+    }
+    
+    // FIXED: Added toString method for debugging
+    @Override
+    public String toString() {
+        return nama + " (" + noKtp + ")";
+    }
+    
+    // FIXED: Added equals method
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Tamu tamu = (Tamu) obj;
+        return id == tamu.id;
+    }
 }

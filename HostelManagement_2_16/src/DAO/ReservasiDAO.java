@@ -5,7 +5,7 @@
 package DAO;
 
 import config.DatabaseConnection;
-import model.Reservasi;
+import Model.Reservasi;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,7 @@
 package DAO;
 
 import config.DatabaseConnection;
-import model.User;
+import Model.User;
 import java.sql.*;
 
 public class UserDAO {

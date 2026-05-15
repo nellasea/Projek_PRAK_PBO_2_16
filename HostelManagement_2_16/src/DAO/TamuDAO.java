@@ -5,7 +5,7 @@
 package DAO;
 
 import config.DatabaseConnection;
-import model.Tamu;
+import Model.Tamu;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

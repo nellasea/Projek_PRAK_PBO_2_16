@@ -21,9 +21,7 @@ public class Reservasi {
     private String namaTamu;
     private String nomorKamar;
     
-    public Reservasi() {}
-    
-    // Getters & Setters
+    // Getters dan Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public int getIdTamu() { return idTamu; }

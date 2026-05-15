@@ -5,7 +5,7 @@
 package DAO;
 
 import config.DatabaseConnection;
-import model.Reservasi;
+import Model.Reservasi;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,5 +57,9 @@ public class LaporanDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public List<Reservasi> getLaporanPendapatan() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
