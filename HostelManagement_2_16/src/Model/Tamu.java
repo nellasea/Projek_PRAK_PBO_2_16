@@ -16,7 +16,8 @@ public class Tamu {
     
     public Tamu() {}
     
-    public Tamu(String nama, String noKtp, String noTelepon, String alamat, Date tanggalLahir) {
+    public Tamu(int id, String nama, String noKtp, String noTelepon, String alamat, Date tanggalLahir) {
+        this.id = id;
         this.nama = nama;
         this.noKtp = noKtp;
         this.noTelepon = noTelepon;
@@ -24,7 +25,7 @@ public class Tamu {
         this.tanggalLahir = tanggalLahir;
     }
     
-    // Getters & Setters
+    // Getters dan Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getNama() { return nama; }
