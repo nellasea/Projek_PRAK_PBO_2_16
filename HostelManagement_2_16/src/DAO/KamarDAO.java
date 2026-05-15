@@ -44,6 +44,36 @@ public class KamarDAO {
         return list;
     }
     
+    // Ambil kamar berdasarkan ID
+public Kamar getKamarById(int id) {
+    String sql = "SELECT * FROM kamar WHERE id = ?";
+    try {
+        Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        
+        if (rs.next()) {
+            Kamar kamar = new Kamar();
+            kamar.setId(rs.getInt("id"));
+            kamar.setNomorKamar(rs.getString("nomor_kamar"));
+            kamar.setTipe(rs.getString("tipe"));
+            kamar.setHargaPerMalam(rs.getBigDecimal("harga_per_malam"));
+            kamar.setStatus(rs.getString("status"));
+            kamar.setFasilitas(rs.getString("fasilitas"));
+            return kamar;
+        }
+        
+        rs.close();
+        stmt.close();
+        conn.close();
+        
+    } catch (SQLException e) {
+        System.out.println("Error get kamar by id: " + e.getMessage());
+    }
+    return null;
+}
+    
     // Tambah kamar
     public boolean insertKamar(Kamar kamar) {
         String sql = "INSERT INTO kamar (nomor_kamar, tipe, harga_per_malam, status, fasilitas) VALUES (?, ?, ?, ?, ?)";
