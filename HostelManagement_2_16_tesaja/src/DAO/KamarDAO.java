@@ -11,58 +11,80 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KamarDAO {
-    public List<Kamar> getAll() {
+
+    public List<Kamar> getAllKamar() {
         List<Kamar> list = new ArrayList<>();
         String sql = "SELECT * FROM kamar ORDER BY nomor_kamar";
+        
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
+            
             while (rs.next()) {
-                Kamar k = new Kamar();
-                k.setId(rs.getInt("id"));
-                k.setNomorKamar(rs.getString("nomor_kamar"));
-                k.setTipe(rs.getString("tipe"));
-                k.setHargaPerMalam(rs.getBigDecimal("harga_per_malam"));
-                k.setStatus(rs.getString("status"));
-                k.setFasilitas(rs.getString("fasilitas"));
-                list.add(k);
+                Kamar kamar = new Kamar();
+                kamar.setId(rs.getInt("id"));
+                kamar.setNomorKamar(rs.getString("nomor_kamar"));
+                kamar.setTipe(rs.getString("tipe"));
+                kamar.setHargaPerMalam(rs.getBigDecimal("harga_per_malam"));
+                kamar.setStatus(rs.getString("status"));
+                kamar.setFasilitas(rs.getString("fasilitas"));
+                list.add(kamar);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            System.err.println("Error get kamar: " + e.getMessage());
+        }
         return list;
     }
 
-    public boolean insert(Kamar k) {
-        String sql = "INSERT INTO kamar (nomor_kamar, tipe, harga_per_malam, status, fasilitas) VALUES (?,?,?,?,?)";
+    public boolean insertKamar(Kamar kamar) {
+        String sql = "INSERT INTO kamar (nomor_kamar, tipe, harga_per_malam, status, fasilitas) VALUES (?, ?, ?, ?, ?)";
+        
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, k.getNomorKamar());
-            stmt.setString(2, k.getTipe());
-            stmt.setBigDecimal(3, k.getHargaPerMalam());
-            stmt.setString(4, k.getStatus());
-            stmt.setString(5, k.getFasilitas());
+            
+            stmt.setString(1, kamar.getNomorKamar());
+            stmt.setString(2, kamar.getTipe());
+            stmt.setBigDecimal(3, kamar.getHargaPerMalam());
+            stmt.setString(4, kamar.getStatus());
+            stmt.setString(5, kamar.getFasilitas());
+            
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
+        } catch (SQLException e) {
+            System.err.println("Error insert kamar: " + e.getMessage());
+            return false;
+        }
     }
 
-    public boolean update(Kamar k) {
+    public boolean updateKamar(Kamar kamar) {
         String sql = "UPDATE kamar SET tipe=?, harga_per_malam=?, status=?, fasilitas=? WHERE id=?";
+        
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, k.getTipe());
-            stmt.setBigDecimal(2, k.getHargaPerMalam());
-            stmt.setString(3, k.getStatus());
-            stmt.setString(4, k.getFasilitas());
-            stmt.setInt(5, k.getId());
+            
+            stmt.setString(1, kamar.getTipe());
+            stmt.setBigDecimal(2, kamar.getHargaPerMalam());
+            stmt.setString(3, kamar.getStatus());
+            stmt.setString(4, kamar.getFasilitas());
+            stmt.setInt(5, kamar.getId());
+            
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
+        } catch (SQLException e) {
+            System.err.println("Error update kamar: " + e.getMessage());
+            return false;
+        }
     }
 
-    public boolean delete(int id) {
+    public boolean deleteKamar(int id) {
         String sql = "DELETE FROM kamar WHERE id=?";
+        
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
+        } catch (SQLException e) {
+            System.err.println("Error delete kamar: " + e.getMessage());
+            return false;
+        }
     }
 }

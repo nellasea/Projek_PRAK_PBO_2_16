@@ -12,7 +12,7 @@ public class DatabaseConnection {
         Connection conn = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hostel_db", "root", "");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_hostel_2_16", "root", "");
             System.out.println(" Koneksi Database Berhasil");
         } catch (Exception e) {
             System.err.println(" Koneksi Database Gagal: " + e.getMessage());

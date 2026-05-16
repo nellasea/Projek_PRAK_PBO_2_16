@@ -1,79 +1,151 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package View;
+
 import Controller.ReservasiController;
 import Model.Reservasi;
-import Util.DateHelper;
-import Util.NumberHelper;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.math.BigDecimal;
-import java.util.List;
+import java.sql.Date;
 
-public class ReservasiView extends JFrame {
-    private JTable tbl = new JTable();
-    private DefaultTableModel model = new DefaultTableModel(new String[]{"ID","Tamu","Kamar","In","Out","Malam","Total","Status"},0);
-    private JTextField txtIdTamu=new JTextField(), txtIdKamar=new JTextField(), txtIn=new JTextField(), txtOut=new JTextField(), txtId=new JTextField();
-    private JComboBox<String> cbStatus = new JComboBox<>(new String[]{"Booking","Check-In","Check-Out"});
-    private ReservasiController ctrl = new ReservasiController();
-
+public class ReservasiView extends JPanel {
+    private JTable table;
+    private DefaultTableModel model;
+    private JTextField txtId, txtIdTamu, txtIdKamar, txtIn, txtOut, txtTotal;
+    private JComboBox<String> cbStatus;
+    private ReservasiController ctrl;
+    
     public ReservasiView() {
-        setTitle("Manajemen Reservasi");
-        setSize(900,500);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout(10,10));
-        tbl.setModel(model); add(new JScrollPane(tbl), BorderLayout.CENTER);
-
-        JPanel form = new JPanel(new GridLayout(2,4,5,5));
-        form.add(new JLabel("ID:")); form.add(txtId); txtId.setEditable(false);
-        form.add(new JLabel("ID Tamu:")); form.add(txtIdTamu);
-        form.add(new JLabel("ID Kamar:")); form.add(txtIdKamar);
-        form.add(new JLabel("Check-In:")); form.add(txtIn);
-        form.add(new JLabel("Check-Out:")); form.add(txtOut);
-        form.add(new JLabel("Status:")); form.add(cbStatus);
-
-        JPanel btns = new JPanel();
-        JButton btnBook=new JButton("Booking"), btnStatus=new JButton("Update Status"), btnRef=new JButton("Refresh");
-        btns.add(btnBook); btns.add(btnStatus); btns.add(btnRef);
-        add(form, BorderLayout.NORTH); add(btns, BorderLayout.SOUTH);
-
-        tbl.getSelectionModel().addListSelectionListener(e -> {
-            if(!e.getValueIsAdjusting() && tbl.getSelectedRow()>=0) {
-                int r=tbl.getSelectedRow();
-                txtId.setText(model.getValueAt(r,0).toString());
-                txtIdTamu.setText(model.getValueAt(r,1).toString());
-                txtIdKamar.setText(model.getValueAt(r,3).toString());
-                cbStatus.setSelectedItem(model.getValueAt(r,7).toString());
+        ctrl = new ReservasiController();
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(Color.WHITE);
+        
+        JLabel lblTitle = new JLabel("DATA RESERVASI");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTitle.setForeground(Color.BLACK);
+        
+        String[] cols = {"ID", "Tamu", "Kamar", "Check-In", "Check-Out", "Malam", "Total", "Status"};
+        model = new DefaultTableModel(cols, 0);
+        table = new JTable(model);
+        table.setFont(new Font("Arial", Font.PLAIN, 12));
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        table.setRowHeight(25);
+        
+        JPanel formPanel = new JPanel(new GridLayout(4, 4, 10, 10));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Form Reservasi"));
+        
+        txtId = new JTextField();
+        txtIdTamu = new JTextField();
+        txtIdKamar = new JTextField();
+        txtIn = new JTextField();
+        txtOut = new JTextField();
+        txtTotal = new JTextField();
+        cbStatus = new JComboBox<>(new String[]{"Booking", "Check-In", "Check-Out"});
+        
+        formPanel.add(new JLabel("ID:"));
+        formPanel.add(txtId);
+        formPanel.add(new JLabel("ID Tamu:"));
+        formPanel.add(txtIdTamu);
+        formPanel.add(new JLabel("ID Kamar:"));
+        formPanel.add(txtIdKamar);
+        formPanel.add(new JLabel("Check-In (YYYY-MM-DD):"));
+        formPanel.add(txtIn);
+        formPanel.add(new JLabel("Check-Out (YYYY-MM-DD):"));
+        formPanel.add(txtOut);
+        formPanel.add(new JLabel("Total Harga:"));
+        formPanel.add(txtTotal);
+        formPanel.add(new JLabel("Status:"));
+        formPanel.add(cbStatus);
+        
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnAdd = new JButton("Booking");
+        JButton btnCheckIn = new JButton("Check-In");
+        JButton btnCheckOut = new JButton("Check-Out");
+        JButton btnRefresh = new JButton("Refresh");
+        
+        btnPanel.add(btnAdd);
+        btnPanel.add(btnCheckIn);
+        btnPanel.add(btnCheckOut);
+        btnPanel.add(btnRefresh);
+        
+        add(lblTitle, BorderLayout.NORTH);
+        add(new JScrollPane(table), BorderLayout.CENTER);
+        
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.add(formPanel, BorderLayout.CENTER);
+        bottomPanel.add(btnPanel, BorderLayout.SOUTH);
+        add(bottomPanel, BorderLayout.SOUTH);
+        
+        btnRefresh.addActionListener(e -> loadTable());
+        btnAdd.addActionListener(e -> save());
+        btnCheckIn.addActionListener(e -> updateStatus("Check-In"));
+        btnCheckOut.addActionListener(e -> updateStatus("Check-Out"));
+        
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && table.getSelectedRow() >= 0) {
+                int row = table.getSelectedRow();
+                txtId.setText(model.getValueAt(row, 0).toString());
+                txtIdTamu.setText(model.getValueAt(row, 1).toString());
+                txtIdKamar.setText(model.getValueAt(row, 2).toString());
+                txtIn.setText(model.getValueAt(row, 3).toString());
+                txtOut.setText(model.getValueAt(row, 4).toString());
+                cbStatus.setSelectedItem(model.getValueAt(row, 7).toString());
             }
         });
-
-        btnRef.addActionListener(e -> load());
-        btnBook.addActionListener(e -> {
-            if(txtIdTamu.getText().isEmpty()||txtIdKamar.getText().isEmpty()||txtIn.getText().isEmpty()||txtOut.getText().isEmpty()) { JOptionPane.showMessageDialog(this,"Lengkapi!"); return; }
-            Reservasi r = new Reservasi();
-            r.setIdTamu(Integer.parseInt(txtIdTamu.getText()));
-            r.setIdKamar(Integer.parseInt(txtIdKamar.getText()));
-            r.setTanggalCheckIn(DateHelper.parse(txtIn.getText()));
-            r.setTanggalCheckOut(DateHelper.parse(txtOut.getText()));
-            r.setJumlahMalam(DateHelper.daysBetween(r.getTanggalCheckIn(), r.getTanggalCheckOut()));
-            r.setTotalHarga(BigDecimal.valueOf(r.getJumlahMalam() * 150000)); // Harga dummy, sesuaikan logic
-            r.setStatus("Booking");
-            if(ctrl.add(r)) { JOptionPane.showMessageDialog(this,"Booking Berhasil"); load(); }
-        });
-        btnStatus.addActionListener(e -> {
-            if(txtId.getText().isEmpty()) return;
-            if(ctrl.updateStatus(Integer.parseInt(txtId.getText()), cbStatus.getSelectedItem().toString())) { JOptionPane.showMessageDialog(this,"Status Updated"); load(); }
-        });
-        load();
+        
+        loadTable();
     }
-
-    private void load() {
+    
+    private void loadTable() {
         model.setRowCount(0);
-        for(Reservasi r : ctrl.getAll()) {
-            model.addRow(new Object[]{r.getId(), r.getNamaTamu(), r.getNomorKamar(), DateHelper.format(r.getTanggalCheckIn()), DateHelper.format(r.getTanggalCheckOut()), r.getJumlahMalam(), NumberHelper.format(r.getTotalHarga().doubleValue()), r.getStatus()});
+        for (Reservasi r : ctrl.getAllReservasi()) {
+            model.addRow(new Object[]{
+                r.getId(), r.getNamaTamu(), r.getNomorKamar(),
+                r.getTanggalCheckIn(), r.getTanggalCheckOut(), r.getJumlahMalam(),
+                "Rp " + r.getTotalHarga(), r.getStatus()
+            });
         }
+    }
+    
+    private void save() {
+        Reservasi r = new Reservasi();
+        r.setIdTamu(Integer.parseInt(txtIdTamu.getText()));
+        r.setIdKamar(Integer.parseInt(txtIdKamar.getText()));
+        r.setTanggalCheckIn(Date.valueOf(txtIn.getText()));
+        r.setTanggalCheckOut(Date.valueOf(txtOut.getText()));
+        
+        long diff = r.getTanggalCheckOut().getTime() - r.getTanggalCheckIn().getTime();
+        int days = (int)(diff / (1000 * 60 * 60 * 24));
+        r.setJumlahMalam(days);
+        r.setTotalHarga(new BigDecimal(txtTotal.getText()));
+        r.setStatus("Booking");
+        
+        if (ctrl.addReservasi(r)) {
+            JOptionPane.showMessageDialog(this, "Booking berhasil!");
+            loadTable();
+            clearForm();
+        }
+    }
+    
+    private void updateStatus(String status) {
+        if (txtId.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pilih data dulu!");
+            return;
+        }
+        if (ctrl.updateStatus(Integer.parseInt(txtId.getText()), status)) {
+            JOptionPane.showMessageDialog(this, "Status diubah menjadi " + status);
+            loadTable();
+            clearForm();
+        }
+    }
+    
+    private void clearForm() {
+        txtId.setText("");
+        txtIdTamu.setText("");
+        txtIdKamar.setText("");
+        txtIn.setText("");
+        txtOut.setText("");
+        txtTotal.setText("");
     }
 }

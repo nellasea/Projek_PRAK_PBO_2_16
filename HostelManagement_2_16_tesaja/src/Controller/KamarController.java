@@ -3,13 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Controller;
+
 import DAO.KamarDAO;
 import Model.Kamar;
 import java.util.List;
+
 public class KamarController {
     private KamarDAO dao = new KamarDAO();
-    public List<Kamar> getAll() { return dao.getAll(); }
-    public boolean add(Kamar k) { return dao.insert(k); }
-    public boolean edit(Kamar k) { return dao.update(k); }
-    public boolean delete(int id) { return dao.delete(id); }
+
+    public List<Kamar> getAllKamar() {
+        return dao.getAllKamar();
+    }
+
+    public boolean insertKamar(Kamar kamar) {
+        return dao.insertKamar(kamar);
+    }
+
+    public boolean updateKamar(Kamar kamar) {
+        return dao.updateKamar(kamar);
+    }
+
+    public boolean deleteKamar(int id) {
+        return dao.deleteKamar(id);
+    }
 }

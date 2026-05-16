@@ -11,35 +11,90 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PembayaranDAO {
+    
+    // Method untuk insert pembayaran
     public boolean insert(Pembayaran p) {
-        String sql = "INSERT INTO pembayaran (id_reservasi, jumlah_bayar, metode_pembayaran, status) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO pembayaran (id_reservasi, jumlah_bayar, metode_pembayaran, status) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
             stmt.setInt(1, p.getIdReservasi());
             stmt.setBigDecimal(2, p.getJumlahBayar());
             stmt.setString(3, p.getMetodePembayaran());
             stmt.setString(4, p.getStatus());
+            
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
+        } catch (SQLException e) {
+            System.err.println("Error insert pembayaran: " + e.getMessage());
+            return false;
+        }
     }
-
-    public List<Pembayaran> getByReservasi(int idRes) {
+    
+    // Method untuk mendapatkan semua pembayaran (INI YANG HILANG!)
+    public List<Pembayaran> getAll() {
         List<Pembayaran> list = new ArrayList<>();
-        String sql = "SELECT * FROM pembayaran WHERE id_reservasi=?";
+        String sql = "SELECT * FROM pembayaran ORDER BY tanggal_bayar DESC";
+        
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idRes);
-            ResultSet rs = stmt.executeQuery();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
             while (rs.next()) {
                 Pembayaran p = new Pembayaran();
                 p.setId(rs.getInt("id"));
                 p.setIdReservasi(rs.getInt("id_reservasi"));
                 p.setJumlahBayar(rs.getBigDecimal("jumlah_bayar"));
                 p.setMetodePembayaran(rs.getString("metode_pembayaran"));
+                p.setTanggalBayar(rs.getTimestamp("tanggal_bayar"));
                 p.setStatus(rs.getString("status"));
                 list.add(p);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            System.err.println("Error get all pembayaran: " + e.getMessage());
+        }
         return list;
+    }
+    
+    // Method untuk mendapatkan pembayaran berdasarkan ID reservasi
+    public List<Pembayaran> getPembayaranByReservasi(int idReservasi) {
+        List<Pembayaran> list = new ArrayList<>();
+        String sql = "SELECT * FROM pembayaran WHERE id_reservasi=?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, idReservasi);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Pembayaran p = new Pembayaran();
+                p.setId(rs.getInt("id"));
+                p.setIdReservasi(rs.getInt("id_reservasi"));
+                p.setJumlahBayar(rs.getBigDecimal("jumlah_bayar"));
+                p.setMetodePembayaran(rs.getString("metode_pembayaran"));
+                p.setTanggalBayar(rs.getTimestamp("tanggal_bayar"));
+                p.setStatus(rs.getString("status"));
+                list.add(p);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error get pembayaran by reservasi: " + e.getMessage());
+        }
+        return list;
+    }
+    
+    // Method untuk update status pembayaran
+    public boolean updateStatusPembayaran(int id, String status) {
+        String sql = "UPDATE pembayaran SET status=? WHERE id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, status);
+            stmt.setInt(2, id);
+            
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error update status pembayaran: " + e.getMessage());
+            return false;
+        }
     }
 }

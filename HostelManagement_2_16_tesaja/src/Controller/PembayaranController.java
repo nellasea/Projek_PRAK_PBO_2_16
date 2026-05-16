@@ -3,11 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Controller;
-import DAO.PembayaranDAO;
-import Model.Pembayaran;
-import java.util.List;
+import DAO.PembayaranDAO; import Model.Pembayaran; import java.util.List;
 public class PembayaranController {
     private PembayaranDAO dao = new PembayaranDAO();
-    public boolean add(Pembayaran p) { return dao.insert(p); }
-    public List<Pembayaran> getByReservasi(int id) { return dao.getByReservasi(id); }
+    public boolean insertPembayaran(Pembayaran p) { return dao.insert(p); }
+    public List<Pembayaran> getAllPembayaran() { return dao.getAll(); }
 }
